@@ -13,3 +13,5 @@ __pycache__
 report/
 .*
 compile_commands.json
+hashtable_benchmark
+value_size_calculator

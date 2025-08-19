@@ -168,7 +168,7 @@ public:
 public:
 	void lookup(const TKey* keys,
 	            TValue** values,
-	            const unsigned int& count)
+	            const unsigned int& count) const
 	{
 		for (unsigned int key_i = 0;
 		     key_i < count;
@@ -177,7 +177,7 @@ public:
 			const TKey& key = keys[key_i];
 			TValue*& value = values[key_i];
 			const uint32_t hash = rte_hash_crc(&key, sizeof(TKey), 0);
-			auto& chunk = chunks[hash & (size_T - 1)];
+			const auto& chunk = chunks[hash & (size_T - 1)];
 
 			value = nullptr;
 
@@ -190,7 +190,7 @@ public:
 				{
 					/// found in chunk
 
-					value = &chunk.getValue(chunk_key_i);
+					value = const_cast<TValue*>(&chunk.getValue(chunk_key_i));
 
 					break;
 				}
@@ -201,7 +201,7 @@ public:
 				uint32_t nextExtendedChunkId = chunk.getNextExtendedChunkId();
 				while (nextExtendedChunkId != extendedChunkIdUnknown)
 				{
-					auto& extendedChunk = extendedChunks[nextExtendedChunkId];
+					const auto& extendedChunk = extendedChunks[nextExtendedChunkId];
 
 					for (unsigned int extended_chunk_key_i = 0; ///< @todo: iterator
 					     extended_chunk_key_i < pairsPerExtendedChunk_T;
@@ -212,7 +212,7 @@ public:
 						{
 							/// found in extended chunk
 
-							value = &extendedChunk.getValue(extended_chunk_key_i);
+							value = const_cast<TValue*>(&extendedChunk.getValue(extended_chunk_key_i));
 
 							break;
 						}
